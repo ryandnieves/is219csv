@@ -1,11 +1,30 @@
-const Calculator  = require('./MathOperations')
-a = 1;
-b = 2;
+const parse = require('csv-parse');
+const fs = require('fs');
+const output = [];
+let csvFile = 'Data/smallworldcities.csv';
 
-sum = Calculator.sum(a,b);
-product = Calculator.product(a,b);
-quotient = Calculator.quotient(a,b);
 
-console.log("The sum of your number is: " +sum);
-console.log("The product of your number is: " +product);
-console.log("The quotient of your number is: " +quotient);
+const processData = (err, data) => {
+    data.shift(); // only required if csv has heading row
+
+    const userList = data.map(row => new Cities(...row));
+}
+
+fs.createReadStream(csvFile)
+    .pipe(parse({
+        delimiter: ',',
+        trim: true,
+        skip_empty_lines: true
+    })
+        .on('readable', function(){
+            let record
+            while (record = this.read()) {
+                output.push(record)
+            }
+        })
+        // When we are done, test that the parsed output matched what expected
+        .on('end', function(){
+
+            console.log(output);
+
+        }));
